@@ -1,0 +1,44 @@
+{
+  "version": "1.2.0",
+  "installerSHA256": "0097038cf8c2c2b08caf20a65634fb6f97736bf9d3641d276fee8f82393567f6",
+  "parts": [
+    {
+      "name": "YAML-Studio-Setup-1.2.0-x64.exe.part01",
+      "bytes": 20971520,
+      "sha256": "dba3a721a77496266adf2ff46d531496783e8d54a581288215db4ea0f74070b2"
+    },
+    {
+      "name": "YAML-Studio-Setup-1.2.0-x64.exe.part02",
+      "bytes": 20971520,
+      "sha256": "8979b69c52db5323502edf97395954a397773040338110ce5f77c881f03f5b00"
+    },
+    {
+      "name": "YAML-Studio-Setup-1.2.0-x64.exe.part03",
+      "bytes": 20971520,
+      "sha256": "b6a533e4f3bdac14d9222f65b9caec611520ec1f4a4e6d9b05322adaf545bab6"
+    },
+    {
+      "name": "YAML-Studio-Setup-1.2.0-x64.exe.part04",
+      "bytes": 20971520,
+      "sha256": "b44bd7436bcc5475f506dac34559036136a26c42a5d378d93f866e0a2841c21e"
+    },
+    {
+      "name": "YAML-Studio-Setup-1.2.0-x64.exe.part05",
+      "bytes": 20971520,
+      "sha256": "1eb3196fbf9a6241c6ffce4a9fa2924a5d58fe8a3c3a7cc23e5e537b08856f09"
+    },
+    {
+      "name": "YAML-Studio-Setup-1.2.0-x64.exe.part06",
+      "bytes": 18424445,
+      "sha256": "4770801c2ef532a2617fc90f9ce822720b6caeb85ac972ec134e44dfc89c3a91"
+    }
+  ],
+  "reassemblyBytesIdentical": true,
+  "temporaryReassemblyRemoved": true,
+  "cmdASCII": true,
+  "cmdPrechecksAllSixPartsAndSizes": true,
+  "allAttachmentsBelow25MB": true,
+  "windowsCMDExecutionTested": false,
+  "cmdDisablesDelayedExpansion": true,
+  "generatorReproducesEveryPartByte": true
+}

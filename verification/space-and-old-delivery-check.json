@@ -1,0 +1,15 @@
+{
+  "beforeCleanup": {
+    "rootFree": 3122798592,
+    "temporaryFree": 6876041216
+  },
+  "afterCleanup": {
+    "rootFree": 3240067072,
+    "temporaryFree": 7937318912
+  },
+  "removedOnly": [
+    "this project release intermediate directory",
+    "private /dev/shm/yaml-studio-1.3.0-final temporary directory"
+  ],
+  "old1_2SourceWebInstallerSHA256Unchanged": true
+}

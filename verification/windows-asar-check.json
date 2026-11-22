@@ -1,0 +1,62 @@
+{
+  "installerBytes": 123284129,
+  "installerSHA256": "bfac9a16f25d8c4c25d04ce290f3c6485f46931dd9f83a5def621c92b8cee930",
+  "embeddedArchiveOffset": 435694,
+  "embeddedArchiveBytes": 122453490,
+  "embeddedArchiveSHA256": "3889d314bad5e4cd21a993f970ad401fa7b4c60f044698ddc4a24b65ee4139c5",
+  "startAndNextHeaderCRC": "pass",
+  "extractionCRC": "7zip exit 0",
+  "version": "1.3.2",
+  "applicationPE": "MZ / PE / AMD64 (0x8664)",
+  "actualInstallerPayloadVerified": true,
+  "verifiedFiles": [
+    {
+      "path": "dist/assets/index-BUlfaocl.js",
+      "bytes": 999310,
+      "sha256": "bf68b9651aee1bd1246c4cdcb5194a287b1967489447cd48df1750363d323c53"
+    },
+    {
+      "path": "dist/assets/index-oXmQqOCv.css",
+      "bytes": 34291,
+      "sha256": "e92ea73fc7f3db6c91d64a006c06f33a98e3ca8e248b479d1da4c9fb22920d92"
+    },
+    {
+      "path": "dist/assets/regex.worker-CmobC3Vw.js",
+      "bytes": 405,
+      "sha256": "54d82d6e44d0698060b485f6ede73058c31ae19b8e730c50ef14364a7022c33b"
+    },
+    {
+      "path": "dist/favicon.svg",
+      "bytes": 9522,
+      "sha256": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66"
+    },
+    {
+      "path": "dist/icons.svg",
+      "bytes": 5031,
+      "sha256": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a"
+    },
+    {
+      "path": "dist/index.html",
+      "bytes": 854,
+      "sha256": "fa1f1c5447919c80d67d9e0388e2cf98b1a307676f80bb588fd4021bb4a07b90"
+    },
+    {
+      "path": "electron/main.cjs",
+      "bytes": 10741,
+      "sha256": "4ce01f19c31dcb78e77649e00460cec1db0a44d3c11c72f02ead884be090bde4"
+    },
+    {
+      "path": "electron/preload.cjs",
+      "bytes": 1931,
+      "sha256": "e4676b5d4d15c0425b4db414349d253ee62330a3b1c5d7541e8ee61002a1f305"
+    },
+    {
+      "path": "electron/security.cjs",
+      "bytes": 425,
+      "sha256": "0dbab763693cb0d2a4212969076813c8a13ed1689b9e21631b91e21340aa5c71"
+    }
+  ],
+  "asarSHA256": "77e63bf72e07ba436a81d119c6975e0f3c01258ed9ebfa80b0533ae22f9dca21",
+  "windowsNativeTested": false,
+  "signed": false
+}

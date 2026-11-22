@@ -1,0 +1,43 @@
+{
+  "installer": "YAML-Studio-Setup-1.3.2-x64.exe",
+  "bytes": 123284129,
+  "sha256": "bfac9a16f25d8c4c25d04ce290f3c6485f46931dd9f83a5def621c92b8cee930",
+  "partSize": 20971520,
+  "parts": [
+    {
+      "name": "YAML-Studio-Setup-1.3.2-x64.exe.part01",
+      "bytes": 20971520,
+      "sha256": "b05fed4ae4eade2876a0ee3c7d04d518618e8ec366ac694f631b6dbd6c85f199"
+    },
+    {
+      "name": "YAML-Studio-Setup-1.3.2-x64.exe.part02",
+      "bytes": 20971520,
+      "sha256": "5a1e461dd2011c45ef1c1e5e6bef7b43dc8b93b150739bcf00b974d264255a99"
+    },
+    {
+      "name": "YAML-Studio-Setup-1.3.2-x64.exe.part03",
+      "bytes": 20971520,
+      "sha256": "034352e9fb6e7a05a48157d27a694b14ac40b5eecffe3d74222633724e56887d"
+    },
+    {
+      "name": "YAML-Studio-Setup-1.3.2-x64.exe.part04",
+      "bytes": 20971520,
+      "sha256": "75e2cf09cd9b7c102fc89d0622e1716e1bccd56bb1955b278d703e47de00511d"
+    },
+    {
+      "name": "YAML-Studio-Setup-1.3.2-x64.exe.part05",
+      "bytes": 20971520,
+      "sha256": "43c878b899ccab377a02ee7864bdf65835e19d2b0a5dce0496cf0e434437e30a"
+    },
+    {
+      "name": "YAML-Studio-Setup-1.3.2-x64.exe.part06",
+      "bytes": 18426529,
+      "sha256": "c6c2cc4e6c24960ddb8f275103201bd39fa5711f37b88ce78bc1744214b16abd"
+    }
+  ],
+  "reassembledSHA256": "bfac9a16f25d8c4c25d04ce290f3c6485f46931dd9f83a5def621c92b8cee930",
+  "reassembly": "pass",
+  "temporaryReassembledFileRemoved": true,
+  "CMD": "ASCII / CRLF; missing/size/output preconditions and SHA256 checked statically; not executed on Windows",
+  "allPartsUnder25000000Bytes": true
+}

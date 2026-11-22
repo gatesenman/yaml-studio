@@ -1,0 +1,56 @@
+{
+  "version": "1.2.0",
+  "applicationPE": "MZ / PE / AMD64 (0x8664)",
+  "verifiedFiles": [
+    {
+      "path": "dist/assets/index-6E1JXmxQ.css",
+      "bytes": 32792,
+      "sha256": "32c0daba737b2b06a7a92acbbe5c846f5a8deb9b11c278552fdc1bf0de0ccce9"
+    },
+    {
+      "path": "dist/assets/index-Bl2zOCQ2.js",
+      "bytes": 991460,
+      "sha256": "f865157b1a8b7f5cfaae4b7670fc08cbdc856ed70fcc8041dd94dbbac7c06d72"
+    },
+    {
+      "path": "dist/assets/regex.worker-CmobC3Vw.js",
+      "bytes": 405,
+      "sha256": "54d82d6e44d0698060b485f6ede73058c31ae19b8e730c50ef14364a7022c33b"
+    },
+    {
+      "path": "dist/favicon.svg",
+      "bytes": 9522,
+      "sha256": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66"
+    },
+    {
+      "path": "dist/icons.svg",
+      "bytes": 5031,
+      "sha256": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a"
+    },
+    {
+      "path": "dist/index.html",
+      "bytes": 854,
+      "sha256": "96f7ef5b367a488be4bcde6b0b3a7eae1fb017682e2e15e37058a84e5fd61bcb"
+    },
+    {
+      "path": "electron/main.cjs",
+      "bytes": 10741,
+      "sha256": "4ce01f19c31dcb78e77649e00460cec1db0a44d3c11c72f02ead884be090bde4"
+    },
+    {
+      "path": "electron/preload.cjs",
+      "bytes": 1931,
+      "sha256": "e4676b5d4d15c0425b4db414349d253ee62330a3b1c5d7541e8ee61002a1f305"
+    },
+    {
+      "path": "electron/security.cjs",
+      "bytes": 425,
+      "sha256": "0dbab763693cb0d2a4212969076813c8a13ed1689b9e21631b91e21340aa5c71"
+    }
+  ],
+  "validation": "Static Linux verification only; Windows runtime not tested",
+  "actualInstallerPayloadVerified": true,
+  "installerBytes": 123282045,
+  "installerSHA256": "0097038cf8c2c2b08caf20a65634fb6f97736bf9d3641d276fee8f82393567f6",
+  "installerBootstrap": "NSIS-3 Unicode PE; embedded application AMD64"
+}

@@ -1,0 +1,5 @@
+service:
+  name: ux-demo
+  port: 8080
+enabled: true
+missing: *missing

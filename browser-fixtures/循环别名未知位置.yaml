@@ -1,0 +1,3 @@
+service: &service
+  name: cyclic
+  self: *service

@@ -1,0 +1,8 @@
+# 用于字段事务、边界与双文档测试
+service:
+  name: ux-demo
+  port: 8080
+---
+service:
+  name: other-doc
+  port: 9090
