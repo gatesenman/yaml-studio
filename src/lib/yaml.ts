@@ -88,6 +88,25 @@ function lostValueMessage(kind: ValueKind, fallback: string): string {
   return `当前值无法安全转为${labels[kind]}，已${fallback}。可撤销。`
 }
 
+export interface ScalarInput {
+  value: unknown
+  /** True when the text looks numeric but cannot be kept without precision or format loss. */
+  numericUnsafe?: boolean
+}
+
+/** Interpret a search/batch text as a scalar without silently rounding unsafe numbers. */
+export function interpretScalarInput(raw: string): ScalarInput {
+  const text = raw.trim()
+  if (text === 'true') return { value: true }
+  if (text === 'false') return { value: false }
+  if (text === 'null' || text === '~') return { value: null }
+  if (!text) return { value: raw }
+  const parsed = parseConvertibleNumber(text)
+  if (parsed !== null) return { value: parsed }
+  if (/^-?[\d._]+(?:[eE][+-]?\d+)?$/.test(text)) return { value: raw, numericUnsafe: true }
+  return { value: raw }
+}
+
 /** Convert a value to another field kind, keeping a representable value when safe. */
 export function convertValueToKind(value: unknown, kind: ValueKind): ConvertKindResult {
   const from = kindOf(value)

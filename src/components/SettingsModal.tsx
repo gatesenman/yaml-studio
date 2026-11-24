@@ -9,6 +9,7 @@ import {
 } from '../lib/ai'
 import { useStore } from '../store'
 import { isDesktop } from '../lib/fileActions'
+import { compileSchemaDetail } from '../lib/schemaHints'
 
 type Tab = 'ai' | 'schema' | 'assoc'
 
@@ -23,7 +24,6 @@ export function SettingsModal({
   const [tab, setTab] = useState<Tab>('ai')
   const schemaText = useStore((s) => s.schemaText)
   const setSchemaText = useStore((s) => s.setSchemaText)
-  const schemaObj = useStore((s) => s.schemaObj)
   const [assocMsg, setAssocMsg] = useState('')
   const [settingsError,setSettingsError] = useState('')
   const [fieldErrors,setFieldErrors] = useState<AiSettingsFieldErrors>({})
@@ -135,9 +135,9 @@ export function SettingsModal({
             <div className="settings-note">
               {schemaText.trim() === ''
                 ? '（未设置 Schema）'
-                : schemaObj
+                : compileSchemaDetail(schemaText).schema
                   ? '✓ Schema 已生效'
-                  : '⚠ 无法解析为有效的 Schema'}
+                  : `⚠ ${compileSchemaDetail(schemaText).error || '无法解析为有效的 Schema'}`}
             </div>
             <button className="btn btn-sm" onClick={() => setSchemaText('')}>
               清除 Schema

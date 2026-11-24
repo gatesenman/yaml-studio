@@ -13,6 +13,7 @@ import {
   addKey,
   renameKey,
   format as formatYaml,
+  diagnostics,
   type Path,
   type YamlError,
 } from './lib/yaml'
@@ -90,6 +91,8 @@ interface StoreState {
   docOffset: { startLine: number; startOffset: number }
   /** Anchor (`&`) / alias (`*`) positions in the active document. */
   anchorMeta: AnchorMeta
+  streamIssueCount: number
+  otherIssueCount: number
 
   /** Undo / redo stacks of full source snapshots. */
   past: string[]
@@ -164,6 +167,8 @@ interface Derived {
   activeSegment: string
   docOffset: { startLine: number; startOffset: number }
   anchorMeta: AnchorMeta
+  streamIssueCount: number
+  otherIssueCount: number
 }
 
 /** Parse the active document out of a (possibly multi-document) stream. */
@@ -179,6 +184,17 @@ function derive(src: string, wantIndex: number): Derived {
   } catch {
     /* ignore */
   }
+  const issues = diagnostics(src)
+  const segStart = seg.startOffset
+  const segEnd = docIndex + 1 < segs.length ? segs[docIndex + 1].startOffset : src.length
+  const otherIssueCount = issues.filter((item) => {
+    const at = item.pos?.[0]
+    return typeof at === 'number' && (at < segStart || at >= segEnd)
+  }).length
+  const currentHasIssue = Boolean(error) || issues.some((item) => {
+    const at = item.pos?.[0]
+    return at === undefined || (at >= segStart && at < segEnd)
+  })
   return {
     parsed: value,
     error,
@@ -187,6 +203,8 @@ function derive(src: string, wantIndex: number): Derived {
     activeSegment: seg.text,
     docOffset: { startLine: seg.startLine, startOffset: seg.startOffset },
     anchorMeta,
+    streamIssueCount: issues.length || (currentHasIssue ? 1 : 0),
+    otherIssueCount,
   }
 }
 

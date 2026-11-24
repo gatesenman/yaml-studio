@@ -15,6 +15,7 @@ import { OutlinePanel } from './components/OutlinePanel'
 import { ConvertModal } from './components/ConvertModal'
 import { DiffModal } from './components/DiffModal'
 import { useStore } from './store'
+import { yamlStatusText } from './lib/status'
 import { saveCurrent, saveAs, openViaDialog, newDocument, importBrowserFile, canReplace, registerLeaveGuard, notify, isDesktop, handleWebSaveKey } from './lib/fileActions'
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
   const error = useStore((s) => s.error)
   const docIndex = useStore((s) => s.docIndex)
   const docCount = useStore((s) => s.docCount)
+  const otherIssueCount = useStore((s) => s.otherIssueCount)
   const filePath = useStore((s) => s.filePath)
   const [leavePrompt, setLeavePrompt] = useState(false)
   const leaveResolve = useRef<((ok: boolean) => void) | null>(null)
@@ -183,6 +185,7 @@ function App() {
     window.addEventListener('mouseup', onUp)
   }, [])
 
+  const yamlStatus = yamlStatusText({ docCount, currentHasIssue: Boolean(error), otherIssueCount })
   const onDrop = async (e: React.DragEvent) => {
     e.preventDefault()
     setDragOver(false)
@@ -247,7 +250,7 @@ function App() {
 
       <TestPanel />
       {notice && <div className="notice-bar" role="status"><span>{notice}</span><button aria-label="关闭通知" onClick={() => notify('')}>×</button></div>}
-      <footer className="statusbar"><span className={error ? 'status-error' : 'status-ok'}>{error ? '● 解析/安全检查待处理' : '● YAML 就绪'}</span><span title={filePath || '本地草稿，不关联磁盘路径'}>{dirty ? '有未保存更改' : '无未保存更改'}</span><span className="status-spacer"/><span>文档 {docIndex + 1}/{docCount}</span><span>{source.split('\n').length} 行</span><span>UTF-8</span><span>YAML 1.2</span></footer>
+      <footer className="statusbar"><span className={yamlStatus.ok ? 'status-ok' : 'status-error'}>● {yamlStatus.text}</span><span title={filePath || '本地草稿，不关联磁盘路径'}>{dirty ? '有未保存更改' : '无未保存更改'}</span><span className="status-spacer"/><span>文档 {docIndex + 1}/{docCount}</span><span>{source.split('\n').length} 行</span><span>UTF-8</span><span>YAML 1.2</span></footer>
       {leavePrompt && <div className="modal-backdrop" style={{ zIndex: 2000 }}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="leave-title"><div className="modal-header" id="leave-title">{isDesktop()?'保存当前文档的更改？':'继续前处理未保存更改'}</div><div className="modal-body">{isDesktop()?'当前文档有未保存的修改。继续前可以先保存，或放弃修改；取消则保留当前工作区。':'当前文档有未保存更改。可下载 YAML 副本并确认落盘后继续；下载不会写回原文件。取消可保留工作区。'}{downloadPending && <p role="status">下载已发起；请先在浏览器确认文件确实保存成功，再点击下方确认按钮。</p>}</div><div className="modal-footer"><button className="btn" disabled={guardSaving} onClick={() => answerLeave(false)}>取消</button><button className="btn btn-danger" disabled={guardSaving} onClick={() => answerLeave(true)}>放弃更改，继续</button><button className="btn btn-accent" disabled={guardSaving} onClick={async () => { setGuardSaving(true); const state=useStore.getState(); const ok = await saveCurrent(); setGuardSaving(false); if (ok) { if(isDesktop()) answerLeave(true); else setDownloadPending({source:state.source,documentId:state.documentId}) } }}>{isDesktop()?'保存后继续':'下载副本'}</button>{downloadPending && <button className="btn btn-accent" onClick={()=>{const state=useStore.getState();if(state.source!==downloadPending.source||state.documentId!==downloadPending.documentId){notify('工作区已变化，请重新下载后确认。');setDownloadPending(null);return}state.markSaved(null,downloadPending.source);answerLeave(true)}}>已确认下载成功，继续</button>}</div></section></div>}
 
       {dragOver && <div className="drop-overlay">松开以打开 YAML 文件</div>}

@@ -1,6 +1,7 @@
 import Ajv from 'ajv'
 const schemaValidator = new Ajv({ strict: false })
 import { parse } from './yaml'
+import { inspectSchemaSafety } from './schema'
 import type { Path } from './yaml'
 
 /** A minimal view of the parts of JSON Schema we surface in the form. */
@@ -32,14 +33,27 @@ export interface FieldHint {
 
 const EMPTY: FieldHint = { required: false }
 
+export interface CompiledSchema {
+  schema: JsonSchema | null
+  error: string | null
+}
+
 /** Parse JSON-or-YAML schema text into an object (or null when empty/invalid). */
-export function compileSchema(text: string): JsonSchema | null {
-  if (!text.trim()) return null
+export function compileSchemaDetail(text: string): CompiledSchema {
+  if (!text.trim()) return { schema: null, error: null }
+  if (text.length > 131072) return { schema: null, error: 'Schema 超过 128 KiB 限制' }
   const { value, error } = parse(text)
-  if (typeof value === 'boolean' && !error) return value ? {} : { not: {} }
-  if (error || !value || typeof value !== 'object') return null
-  try { if (!schemaValidator.validateSchema(value)) return null } catch { return null }
-  return value as JsonSchema
+  if (error) return { schema: null, error: `Schema 无法解析：${error.message}` }
+  if (typeof value === 'boolean') return { schema: value ? {} : { not: {} }, error: null }
+  if (!value || typeof value !== 'object') return { schema: null, error: 'Schema 必须是对象或布尔值' }
+  const safety = inspectSchemaSafety(value)
+  if (safety) return { schema: null, error: safety }
+  try { if (!schemaValidator.validateSchema(value)) return { schema: null, error: '不是有效的 JSON Schema' } } catch { return { schema: null, error: '不是有效的 JSON Schema' } }
+  return { schema: value as JsonSchema, error: null }
+}
+
+export function compileSchema(text: string): JsonSchema | null {
+  return compileSchemaDetail(text).schema
 }
 
 /** Resolve a local `$ref` (only `#/...` pointers) against the root schema. */

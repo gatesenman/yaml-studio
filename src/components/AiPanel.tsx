@@ -33,7 +33,9 @@ export function AiPanel({ open, onClose, onOpenSettings }: { open: boolean; onCl
       if (useStore.getState().source !== base || useStore.getState().documentId !== documentId) { setError('生成期间文档已变化，请重新生成，或复制预览后手动合并。'); return }
       if(!useStore.getState().applySource(result,base,documentId))return
     } else {
+      if (useStore.getState().documentId !== documentId) { setError('工作区已变化，请重新生成，或复制预览后手动合并。'); return }
       if (!await canReplace()) return
+      if (useStore.getState().documentId !== documentId) { setError('工作区已变化，请重新生成，或复制预览后手动合并。'); return }
       useStore.getState().importFile('ai-generated.yaml', result)
     }
     notify('AI 结果已应用，请检查内容并执行 Schema / 断言测试。'); setResult(''); onClose()

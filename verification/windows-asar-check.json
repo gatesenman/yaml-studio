@@ -1,24 +1,24 @@
 {
-  "installerBytes": 123284129,
-  "installerSHA256": "bfac9a16f25d8c4c25d04ce290f3c6485f46931dd9f83a5def621c92b8cee930",
-  "embeddedArchiveOffset": 435694,
-  "embeddedArchiveBytes": 122453490,
-  "embeddedArchiveSHA256": "3889d314bad5e4cd21a993f970ad401fa7b4c60f044698ddc4a24b65ee4139c5",
+  "installerBytes": 123285319,
+  "installerSHA256": "d0971dbe95a0cd62ae0b9e1e45f4d3b068496d09a134a527b9fe532e29b0127d",
+  "embeddedArchiveOffset": 435681,
+  "embeddedArchiveBytes": 122849638,
+  "embeddedArchiveSHA256": "222cc3485f5a4e1b283d389b8025d35f6c88cf171070f385fbf67f2b937c94fc",
   "startAndNextHeaderCRC": "pass",
   "extractionCRC": "7zip exit 0",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "applicationPE": "MZ / PE / AMD64 (0x8664)",
   "actualInstallerPayloadVerified": true,
   "verifiedFiles": [
     {
-      "path": "dist/assets/index-BUlfaocl.js",
-      "bytes": 999310,
-      "sha256": "bf68b9651aee1bd1246c4cdcb5194a287b1967489447cd48df1750363d323c53"
-    },
-    {
       "path": "dist/assets/index-oXmQqOCv.css",
       "bytes": 34291,
       "sha256": "e92ea73fc7f3db6c91d64a006c06f33a98e3ca8e248b479d1da4c9fb22920d92"
+    },
+    {
+      "path": "dist/assets/index-qjuc9nEs.js",
+      "bytes": 1003083,
+      "sha256": "df9e7f63ac77160c1c48f58c3c4ed912737d845f386c72436dab48095f4f214d"
     },
     {
       "path": "dist/assets/regex.worker-CmobC3Vw.js",
@@ -38,7 +38,7 @@
     {
       "path": "dist/index.html",
       "bytes": 854,
-      "sha256": "fa1f1c5447919c80d67d9e0388e2cf98b1a307676f80bb588fd4021bb4a07b90"
+      "sha256": "7b5297ea655cd3f1d144c80cc61d307ce31b562b17516629a7bfa58462e4b3ab"
     },
     {
       "path": "electron/main.cjs",
@@ -56,7 +56,7 @@
       "sha256": "0dbab763693cb0d2a4212969076813c8a13ed1689b9e21631b91e21340aa5c71"
     }
   ],
-  "asarSHA256": "77e63bf72e07ba436a81d119c6975e0f3c01258ed9ebfa80b0533ae22f9dca21",
+  "asarSHA256": "893999ff00c3a99e0fc87b321027a37d62a396edae68e9b0756a3ccd8f17a1b6",
   "windowsNativeTested": false,
   "signed": false
 }

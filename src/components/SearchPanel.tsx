@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store'
 import { searchYaml, isAliasPath, type Match } from '../lib/search'
-import { type ValueKind } from '../lib/yaml'
+import { interpretScalarInput, type ValueKind } from '../lib/yaml'
 import { notify } from '../lib/fileActions'
 import { generateYaml, loadAiSettings } from '../lib/ai'
 
@@ -14,16 +14,6 @@ const KIND_LABELS: Record<ValueKind, string> = {
   array: '列表',
 }
 
-/** Coerce a raw text input into the most natural scalar type. */
-function coerceScalar(raw: string): unknown {
-  const t = raw.trim()
-  if (t === 'true') return true
-  if (t === 'false') return false
-  if (t === 'null' || t === '~') return null
-  if (t !== '' && !Number.isNaN(Number(t)) && /^-?\d+(\.\d+)?$/.test(t))
-    return Number(t)
-  return raw
-}
 
 /** Inline editor for a single matched scalar value. */
 function InlineValue({ match }: { match: Match }) {
@@ -73,7 +63,13 @@ function InlineValue({ match }: { match: Match }) {
           if(!local.trim()||!Number.isFinite(n)||(Number.isInteger(n)&&!Number.isSafeInteger(n))){notify('请输入安全范围内的有效数字；原值已保留。');setLocal(String(match.value));return}
           setValueAt(match.path,n);return
         }
-        setValueAt(match.path, coerceScalar(local))
+        const parsed = interpretScalarInput(local)
+        if (parsed.numericUnsafe) {
+          notify('该输入无法安全识别为数字，已按文本保留以免丢失精度。可撤销。')
+          setValueAt(match.path, String(local))
+          return
+        }
+        setValueAt(match.path, parsed.value)
       }}
       onChange={(e) => setLocal(e.target.value)}
       onKeyDown={(e) => {
@@ -94,7 +90,10 @@ export function SearchPanel({
 }) {
   const parsed = useStore((s) => s.parsed)
   const aliases=useStore(s=>s.anchorMeta.aliases)
-  const source = useStore((s) => s.source)
+  const activeSegment = useStore((s) => s.activeSegment)
+  const docOffset = useStore((s) => s.docOffset)
+  const docCount = useStore((s) => s.docCount)
+  const docIndex = useStore((s) => s.docIndex)
   const setValueAtMany = useStore((s) => s.setValueAtMany)
   const deleteMany = useStore((s) => s.deleteMany)
 
@@ -140,9 +139,9 @@ export function SearchPanel({
     const timer = setTimeout(() => { worker.terminate(); setRegexHits({error:'正则查询超过 250 毫秒，已安全终止。请简化表达式。'}) },250)
     worker.onmessage = event => { clearTimeout(timer); worker.terminate(); setRegexHits(event.data.error ? {error:event.data.error} : event.data.hits) }
     worker.onerror = () => { clearTimeout(timer); worker.terminate(); setRegexHits({error:'正则查询工作线程失败。'}) }
-    worker.postMessage({source,query})
+    worker.postMessage({source:activeSegment,query})
     return () => { clearTimeout(timer); worker.terminate() }
-  },[open,useRegex,query,source])
+  },[open,useRegex,query,activeSegment])
 
   const hits = Array.isArray(regexHits) ? regexHits : []
 
@@ -155,10 +154,11 @@ export function SearchPanel({
     }
     setRegexError(Array.isArray(regexHits) ? '' : regexHits.error)
     const idx = hits.length ? Math.min(hitIndex, hits.length - 1) : -1
-    setSearch(hits, idx)
+    const offset = docOffset.startOffset
+    setSearch(hits.map((hit) => ({ from: hit.from + offset, to: hit.to + offset })), idx)
     // `hits` is derived from `regexHits`; `setSearch` is a stable store action.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, useRegex, regexHits, hitIndex])
+  }, [open, useRegex, regexHits, hitIndex, docOffset.startOffset])
 
   useEffect(() => {
     setHitIndex(0)
@@ -183,9 +183,20 @@ export function SearchPanel({
 
   const applyBatch = () => {
     if (useRegex || hasReadOnly || scalarMatches.length === 0 || matches.length > 300) return
+    const parsed = interpretScalarInput(batchValue)
+    if (parsed.numericUnsafe) {
+      const strings = scalarMatches.filter((m) => m.kind === 'string')
+      if (strings.length === 0) {
+        notify('该值无法安全识别为数字，已取消批量修改以免丢失精度。')
+        return
+      }
+      setValueAtMany(strings.map((m) => m.path), batchValue, batchValue)
+      notify(`该值无法安全识别为数字，仅更新了 ${strings.length} 个文本字段，未改写数字等非文本字段。`)
+      return
+    }
     setValueAtMany(
       scalarMatches.map((m) => m.path),
-      coerceScalar(batchValue),
+      parsed.value,
       batchValue,
     )
   }
@@ -223,6 +234,7 @@ export function SearchPanel({
       {aiResult && <div className="sp-ai-preview"><label>AI 全文件修改预览<textarea className="convert-text" readOnly value={aiResult}/></label><button className="btn" onClick={() => {
         const state=useStore.getState();if(state.source!==aiBase.current.source||state.documentId!==aiBase.current.documentId){setAiError('工作区已变化，请重新生成；未应用旧结果。');return}if(state.applySource(aiResult,aiBase.current.source,aiBase.current.documentId))setAiResult('')
       }}>确认应用 AI 结果</button></div>}
+      {docCount > 1 && <p className="settings-note">查询、高亮与批量修改仅针对当前文档（第 {docIndex + 1}/{docCount} 份）。可在源码上方切换文档后再查其他文档。</p>}
       <div className="sp-header">
         <span className="pane-icon pane-icon-form" aria-hidden>🔍</span>
         <span className="pane-title">查询与批量修改</span>

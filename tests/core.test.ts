@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { parse, setAtPath, setAtPaths, renameKey, addItem, deleteAtPaths, diagnostics, getAtPath, reorderChildren, convertValueToKind } from '../src/lib/yaml'
+import { parse, setAtPath, setAtPaths, renameKey, addItem, deleteAtPaths, diagnostics, getAtPath, reorderChildren, convertValueToKind, interpretScalarInput } from '../src/lib/yaml'
 import { splitDocuments, replaceSegment } from '../src/lib/multidoc'
 import { yamlToJson, jsonToYaml, envToYaml, propertiesToYaml } from '../src/lib/convert'
 import { validateAgainstSchema } from '../src/lib/schema'
@@ -91,7 +91,7 @@ test('semantic YAML errors are reported by both parse and whole-stream diagnosti
 
 import { diffLines } from '../src/lib/diff'
 import { runAssertions } from '../src/lib/assertions'
-import { compileSchema, hintAt } from '../src/lib/schemaHints'
+import { compileSchema, compileSchemaDetail, hintAt } from '../src/lib/schemaHints'
 import { scanRegex } from '../src/lib/regex'
 import { sourceLimitReason } from '../src/lib/limits'
 test('large Diff uses bounded block fallback, context and preview rows', () => {
@@ -133,6 +133,12 @@ test('assertions support literal paths, deep equality and explicit empty path re
  ])
  assert.deepEqual(values.map(v=>v.r.ok),[true,true,false,false,false,true,false])
  assert.equal(runAssertions('a: *missing',[{id:'1',path:'a',op:'exists',expected:''}])[0].r.ok,false)
+ assert.deepEqual(runAssertions('enabled: true\nport: 8080\nname: web\n',[
+  {id:'c1',path:'enabled',op:'type',expected:'开关'},
+  {id:'c2',path:'enabled',op:'type',expected:'boolean'},
+  {id:'c3',path:'port',op:'type',expected:'数字'},
+  {id:'c4',path:'name',op:'type',expected:'文本'},
+ ]).map(v=>v.r.ok),[true,true,true,true])
 })
 test('Schema booleans, escaped refs, malformed recursive schema and regex refusal are safe', () => {
  assert.ok(compileSchema('false'));assert.ok(compileSchema('true'))
@@ -140,6 +146,12 @@ test('Schema booleans, escaped refs, malformed recursive schema and regex refusa
  assert.equal(validateAgainstSchema('a: 1','true').ok,true)
  assert.doesNotThrow(()=>validateAgainstSchema('a: 1','$ref: "#"'))
  assert.equal(validateAgainstSchema('a: text','properties:\n  a:\n    pattern: "(a+)+$"').ok,false)
+ assert.equal(compileSchema('properties:\n  a:\n    pattern: "(a+)+$"'),null)
+ assert.match(compileSchemaDetail('properties:\n  a:\n    pattern: "(a+)+$"').error||'',/pattern/)
+ const typeErr=validateAgainstSchema('name: 1','{"type":"object","properties":{"name":{"type":"string"}}}')
+ assert.equal(typeErr.ok,false)
+ assert.match(typeErr.errors[0],/路径 \/name：必须是文本/)
+ assert.doesNotMatch(typeErr.errors[0],/must be string/)
  const schema=compileSchema('type: object\nproperties:\n  x: {$ref: "#/$defs/a~1b"}\n$defs:\n  a/b: {enum: [one, two]}')
  assert.deepEqual(hintAt(schema,['x']).enumValues,['one','two'])
 })
@@ -232,4 +244,21 @@ test('type conversion keeps representable values and only falls back when unsafe
  assert.deepEqual(toObj.value,{});assert.equal(toObj.preserved,false)
  const toArr=convertValueToKind('8080','array')
  assert.deepEqual(toArr.value,[]);assert.equal(toArr.preserved,false)
+})
+
+import { yamlStatusText } from '../src/lib/status'
+
+test('yaml status text is honest for multi-document streams', () => {
+ assert.deepEqual(yamlStatusText({docCount:1,currentHasIssue:true,otherIssueCount:0}),{ok:false,text:'解析/安全检查待处理'})
+ assert.deepEqual(yamlStatusText({docCount:2,currentHasIssue:true,otherIssueCount:1}),{ok:false,text:'当前文档解析/安全检查待处理'})
+ assert.deepEqual(yamlStatusText({docCount:2,currentHasIssue:false,otherIssueCount:2}),{ok:false,text:'其他文档有解析/安全问题（2）'})
+ assert.deepEqual(yamlStatusText({docCount:2,currentHasIssue:false,otherIssueCount:0}),{ok:true,text:'YAML 就绪'})
+})
+test('interpretScalarInput never silently rounds leading zeros or unsafe integers', () => {
+ assert.deepEqual(interpretScalarInput('8080'),{value:8080})
+ assert.deepEqual(interpretScalarInput('true'),{value:true})
+ assert.equal(interpretScalarInput('001').numericUnsafe,true)
+ assert.equal(interpretScalarInput('001').value,'001')
+ assert.equal(interpretScalarInput('9007199254740993').numericUnsafe,true)
+ assert.equal(interpretScalarInput('9007199254740993').value,'9007199254740993')
 })

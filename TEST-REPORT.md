@@ -1,3 +1,39 @@
+# YAML Studio 1.3.3 · 验证报告
+
+日期：2026-11-24（Asia/Shanghai，UTC+8）。基线为已发布的 1.3.2（https://github.com/gatesenman/yaml-studio ，commit `07923776e0666259102682d2df88d57197785a60`，tag/Release v1.3.2）。本轮未推送 GitHub。
+
+**68 项 npm 测试＋1 项真实 HTTP 服务测试，共 69 项通过，0 失败、0 跳过。** typecheck 与 lint 通过；npm audit 0 个漏洞（以本轮实际输出为准）。不给成熟度分数，不称全面 E2E 通过，也未做新的真实浏览器复验。
+
+## 本轮自动测试覆盖的修复
+
+| 项 | 验证方式 | 结果 |
+| --- | --- | --- |
+| 多文档状态栏诚实性 | 单元测试 `yamlStatusText` + 加载后文档流的 `otherIssueCount` | 通过 |
+| 查询不安全数字不改写精度 | `interpretScalarInput` 单元测试 + SearchPanel 批量修改工作流 | 通过 |
+| Schema 编译/校验一致且中文错误 | `compileSchema`/`compileSchemaDetail` 与 `validateAgainstSchema` 单元测试 + 设置页与测试面板工作流 | 通过 |
+| AI 新建生成过期预览 | 模拟 fetch 的 AiPanel 工作流：重置文档后拒绝应用 | 通过 |
+| 断言中文类型与通过/未通过 | `runAssertions` 单元测试 + TestPanel 工作流 | 通过 |
+| 查询仅当前文档 | SearchPanel 多文档工作流（结构化结果与范围说明） | 通过 |
+| 1.3.2 表单行布局与安全类型转换 | 既有卡片布局与 port 转换工作流测试仍通过 | 未回退 |
+
+## Windows x64 NSIS（交叉构建）
+
+- 文件：`YAML-Studio-Setup-1.3.3-x64.exe`（123285319 字节，SHA256 `d0971dbe95a0cd62ae0b9e1e45f4d3b068496d09a134a527b9fe532e29b0127d`）
+- Linux 标准交叉构建退出码 0；从实际 EXE 按 7z 头长度/CRC 提取完整载荷，7zip 解压退出 0；app.asar 内版本 1.3.3，dist 与 electron 共 9 个文件与构建源逐字节一致；应用 PE 为 AMD64。未签名。
+- 已按 20 MiB 分成 6 片并在本机重组，哈希与原 EXE 一致。合并 CMD 为 ASCII、预检缺片/大小/SHA，不覆盖、不自动执行。
+- 证据：verification/windows-build.log、windows-extract.log、windows-asar-check.json、installer-parts-check.json。
+- **未在 Windows 实机验证安装、卸载、文件关联或合并 CMD。**
+
+## 未在本轮验证的项
+
+- 未做新的真实浏览器目视复验（1.3.2 的四项布局/转换复验记录仍在 verification/browser-acceptance-1.3.2/，本轮未重做）
+- 未在真实 Windows 上测试安装、卸载、文件关联或合并 CMD
+- 未连接真实或付费 AI 接口
+- 顶栏下载、部分快捷键、Diff/设置的完整目视流程本轮未再人工操作
+- 安装包未签名
+
+## 1.3.2 基线记录（历史）
+
 # YAML Studio 1.3.2 · 最终验证报告
 
 日期：2026-11-23（Asia/Shanghai，UTC+8）。环境：Linux x64、Node.js 24.22.1、Vite 8.3.8、Electron 45.4.1、electron-builder 26.18.1。没有调用真实付费 AI。

@@ -165,13 +165,13 @@ export function TestPanel() {
                         className="field-input"
                         value={a.expected}
                         disabled={a.op === 'exists' || a.op === 'notEmpty'}
-                        placeholder={a.op === 'type' ? 'string / number ...' : '值'}
+                        placeholder={a.op === 'type' ? '文本/数字/开关，或 string/number/boolean' : '值'}
                         onChange={(e) => update(a.id, { expected: e.target.value })}
                       />
                     </td>
                     <td>
                       <span className={r.ok ? 'pill pill-ok' : 'pill pill-bad'}>
-                        {r.ok ? 'PASS' : 'FAIL'}
+                        {r.ok ? '通过' : '未通过'}
                       </span>
                       <span className="assert-detail">{r.detail}</span>
                     </td>
